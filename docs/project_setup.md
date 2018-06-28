@@ -1,5 +1,5 @@
 # Project Setup
-**Languages**: [Korean](ko_kr/setup_projects.md)
+**Languages**: [Korean](ko_kr/project_setup.md)
 
 CRSF uses CMake to configure projects.
 

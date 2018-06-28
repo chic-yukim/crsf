@@ -1,4 +1,5 @@
 # 요구사항
+**Languages**: [English](../requirements.md)
 
 ## 하드웨어
 - OpenGL 4.3 이상 지원하는 그래픽카드

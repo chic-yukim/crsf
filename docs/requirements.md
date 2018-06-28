@@ -1,4 +1,5 @@
 # Requirements
+**Languages**: [한국어](ko_kr/requirements.md)
 
 ## Hardware
 - GPU supported above OpenGL 4.3

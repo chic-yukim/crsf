@@ -1,5 +1,5 @@
 # 프로젝트 구성하기
-**Languages**: [English](../setup_projects.md)
+**Languages**: [English](../project_setup.md)
 
 CRSF 에서는 CMake 를 사용해서 프로젝트를 구성합니다.
 

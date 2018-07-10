@@ -69,7 +69,7 @@ public:
 
 	rpplugins::OpenVRPlugin* plugin_;
 
-	rppanda::FunctionalTask* update_task_ = nullptr;
+	PT(rppanda::FunctionalTask) update_task_;
 	double camera_timing_point_ = 0;
 
 	bool initialized_ = false;
@@ -149,12 +149,12 @@ void OpenVRModule::Impl::OnExit(void)
 {
 	self_.m_logger->trace("Exiting OpenVRModule.");
 
-	if (update_task_)
-		rpcore::Globals::base->remove_task(update_task_->get_name());
+    if (update_task_)
+        update_task_->remove();
+    update_task_ = nullptr;
 
 	plugin_ = nullptr;
 	device_point_memory_ = nullptr;
-	update_task_ = nullptr;
 	camera_ = nullptr;
 }
 

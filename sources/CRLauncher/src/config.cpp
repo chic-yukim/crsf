@@ -27,6 +27,8 @@
 
 #include <crsf/System/TSystemConfiguration.h>
 
+#include <iostream>
+
 std::shared_ptr<spdlog::logger> global_logger_;
 static std::vector<std::unique_ptr<boost::dll::shared_library>> dlls_;
 
@@ -74,19 +76,24 @@ void InitLogging(void)
 	}
 }
 
+void show_error_box(const std::wstring& err_msg)
+{
+    MessageBoxW(NULL, err_msg.c_str(), L"CRLauncher Error", MB_ICONERROR);
+}
+
 bool load_panda3d_dlls(const boost::filesystem::path& thirdparty_path)
 {
     const auto panda3d_path = thirdparty_path / "panda3d";
     if (!boost::filesystem::exists(panda3d_path))
     {
-        MessageBoxW(NULL, L"Cannot find panda3d directory in thirdparty.", L"CRSF Error", MB_ICONERROR);
+        show_error_box(L"Cannot find panda3d directory in thirdparty.");
         return false;
     }
 
     const auto bin_path = panda3d_path / "bin";
     if (!boost::filesystem::exists(bin_path))
     {
-        MessageBoxW(NULL, L"Cannot find thirdparty/render_pipeline/bin directory.", L"CRSF Error", MB_ICONERROR);
+        show_error_box(L"Cannot find thirdparty/render_pipeline/bin directory.");
         return false;
     }
 
@@ -104,7 +111,7 @@ bool load_panda3d_dlls(const boost::filesystem::path& thirdparty_path)
     }
     catch (const boost::system::system_error&)
     {
-        MessageBoxW(NULL, (std::wstring(L"Failed to load Panda3D DLLs.")).c_str(), L"CRSF Error", MB_ICONERROR);
+        show_error_box(L"Failed to load Panda3D DLLs.");
         return false;
     }
 }
@@ -114,14 +121,14 @@ bool load_render_pipeline_dlls(const boost::filesystem::path& thirdparty_path)
     const auto render_pipeline_path = thirdparty_path / "render_pipeline";
     if (!boost::filesystem::exists(render_pipeline_path))
     {
-        MessageBoxW(NULL, L"Cannot find render_pipeline directory in thirdparty.", L"CRSF Error", MB_ICONERROR);
+        show_error_box(L"Cannot find render_pipeline directory in thirdparty.");
         return false;
     }
 
     const auto render_pipeline_bin_path = render_pipeline_path / "bin";
     if (!boost::filesystem::exists(render_pipeline_bin_path))
     {
-        MessageBoxW(NULL, L"Cannot find thirdparty/render_pipeline/bin directory.", L"CRSF Error", MB_ICONERROR);
+        show_error_box(L"Cannot find thirdparty/render_pipeline/bin directory.");
         return false;
     }
 
@@ -140,9 +147,66 @@ bool load_render_pipeline_dlls(const boost::filesystem::path& thirdparty_path)
     }
     catch (const boost::system::system_error&)
     {
-        MessageBoxW(NULL, (std::wstring(L"Failed to load render_pipeline DLL: ") + render_pipeline_dll_path.native()).c_str(), L"CRSF Error", MB_ICONERROR);
+        show_error_box(std::wstring(L"Failed to load render_pipeline DLL: ") + render_pipeline_dll_path.native());
         return false;
     }
+}
+
+bool setup_path_env(const boost::filesystem::path& bin_path)
+{
+#if defined(_WIN32)
+    const size_t BUFSIZE = 32767;
+    LPWSTR pszOldVal = (LPWSTR)malloc(BUFSIZE * sizeof(WCHAR));
+    if (!pszOldVal)
+    {
+        show_error_box(L"Out of memory");
+        return false;
+    }
+
+    bool exit_flag = true;
+    auto dwRet = GetEnvironmentVariableW(L"PATH", pszOldVal, BUFSIZE);
+    if (0 == dwRet)
+    {
+        if (ERROR_ENVVAR_NOT_FOUND == GetLastError())
+            exit_flag = false;
+    }
+    else if (BUFSIZE < dwRet)
+    {
+        pszOldVal = (LPWSTR)realloc(pszOldVal, dwRet * sizeof(WCHAR));
+        if (!pszOldVal)
+        {
+            show_error_box(L"Out of memory");
+            return false;
+        }
+
+        auto dwRet = GetEnvironmentVariableW(L"PATH", pszOldVal, BUFSIZE);
+        if (!dwRet)
+        {
+            show_error_box(L"GetEnvironmentVariable failed (" + std::to_wstring(GetLastError()) + L")");
+            free(pszOldVal);
+            return false;
+        }
+        else
+        {
+            exit_flag = true;
+        }
+    }
+    else
+    {
+        exit_flag = true;
+    }
+
+    auto new_env = std::wstring(pszOldVal) + L";" + bin_path.c_str() + L";";
+    free(pszOldVal);
+
+    if (!SetEnvironmentVariableW(L"PATH", new_env.c_str()))
+    {
+        show_error_box(L"SetEnvironmentVariable failed: " + std::to_wstring(GetLastError()));
+        return false;
+    }
+#endif
+
+    return true;
 }
 
 bool load_dlls()
@@ -151,7 +215,7 @@ bool load_dlls()
 	const auto launcher_dir_path = boost::dll::this_line_location().parent_path();
 	if (!launcher_dir_path.has_parent_path())
 	{
-		MessageBoxW(NULL, L"Cannot find CRSF engine directory.", L"CRLauncher Error", MB_ICONERROR);
+        show_error_box(L"Cannot find CRSF engine directory.");
 		return false;
 	}
 
@@ -160,9 +224,12 @@ bool load_dlls()
 	const auto thirdparty_path = engine_path / "thirdparty";
 	if (!(boost::filesystem::exists(engine_bin_path) && boost::filesystem::exists(thirdparty_path)))
 	{
-		MessageBoxW(NULL, L"Cannot find CRSF engine and thirdparty directory.", L"CRLauncher Error", MB_ICONERROR);
+        show_error_box(L"Cannot find CRSF engine and thirdparty directory.");
 		return false;
 	}
+
+    if (!setup_path_env(engine_bin_path))
+        return false;
 
     if (!load_panda3d_dlls(thirdparty_path))
         return false;
@@ -178,7 +245,7 @@ bool load_dlls()
 
 	if (!boost::filesystem::exists(crseedlib_dll_path))
 	{
-		MessageBoxW(NULL, L"Cannot find CRSeedLib DLL.", L"CRSF Error", MB_ICONERROR);
+        show_error_box(L"Cannot find CRSeedLib DLL.");
 		return false;
 	}
 #endif

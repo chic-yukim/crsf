@@ -13,6 +13,7 @@ set(CRMODULE_CONFIG_IN_FILE "${CMAKE_CURRENT_SOURCE_DIR}/crmodule-config.cmake.i
 # === subdirectory =================================================================================
 # modules
 set(CRSF_MODULES
+    "crprofiler"
     "openvr"
 )
 

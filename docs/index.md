@@ -4,7 +4,7 @@
 ## Getting Started
 - [Requirements](requirements.md)
 - [Project Setup](project_setup.md)
-
+- [Structures](directory_structures.md)
 
 
 ## Framework

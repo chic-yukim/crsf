@@ -90,6 +90,8 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
     DEBUG_POSTFIX ${${PROJECT_NAME}_DEBUG_POSTFIX}
     RELWITHDEBINFO_POSTFIX ${${PROJECT_NAME}_RELWITHDEBINFO_POSTFIX}
 )
+
+configure_debugging_information(${PROJECT_NAME})
 # ==================================================================================================
 
 # === install ======================================================================================
@@ -99,4 +101,6 @@ install(TARGETS ${PROJECT_NAME}
     LIBRARY DESTINATION "lib"
     ARCHIVE DESTINATION "lib"
 )
+
+install_debugging_information(${PROJECT_NAME} "bin")
 # ==================================================================================================

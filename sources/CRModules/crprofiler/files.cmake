@@ -11,6 +11,8 @@ set(module_headers
 
 
 set(source_src
+    "${PROJECT_SOURCE_DIR}/src/gui_dsm.cpp"
+    "${PROJECT_SOURCE_DIR}/src/gui_nm.cpp"
     "${PROJECT_SOURCE_DIR}/src/module.cpp"
 )
 

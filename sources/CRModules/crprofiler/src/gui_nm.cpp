@@ -19,38 +19,22 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#pragma once
+#include "crmodules/crprofiler/module.hpp"
 
-#include <luse.h>
+#include <imgui.h>
 
-#include <render_pipeline/rppanda/showbase/direct_object.hpp>
+#include <fmt/format.h>
 
-#include <crsf/CRAPI/TDynamicModuleInterface.h>
+#include <crsf/RemoteWorldInterface/TNetworkManager.h>
 
-namespace crsf {
-class TDynamicStageMemory;
-class TNetworkManager;
-}
-
-class CRProfilerModule: public crsf::TDynamicModuleInterface, public rppanda::DirectObject
+void CRProfilerModule::on_imgui_network_manager()
 {
-public:
-    CRProfilerModule(void);
-
-    void OnLoad(void) override;
-    void OnStart(void) override;
-    void OnExit(void) override;
-
-private:
-    void on_imgui_new_frame();
-    void on_imgui_image_mo();
-    void on_imgui_avatar_mo();
-    void on_imgui_point_mo();
-    void on_imgui_command_mo();
-    void on_imgui_control_mo();
-
-    void on_imgui_network_manager();
-
-    crsf::TDynamicStageMemory* dsm_ = nullptr;
-    crsf::TNetworkManager* nm_ = nullptr;
-};
+    if (nm_->IsInit())
+    {
+        ImGui::LabelText("Status ID", "%d", nm_->GetStatus());
+    }
+    else
+    {
+        ImGui::Text("Network Manager is not initialized.");
+    }
+}

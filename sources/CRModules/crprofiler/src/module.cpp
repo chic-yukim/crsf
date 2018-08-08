@@ -27,6 +27,7 @@
 
 #include <crsf/CoexistenceInterface/TDynamicStageMemory.h>
 #include <crsf/RemoteWorldInterface/TNetworkManager.h>
+#include <crsf/CREngine/TPhysicsManager.h>
 
 CRSEEDLIB_MODULE_CREATOR(CRProfilerModule);
 

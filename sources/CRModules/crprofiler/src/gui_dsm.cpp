@@ -61,6 +61,12 @@ void CRProfilerModule::on_imgui_image_mo()
         ImGui::EndCombo();
     }
 
+    if (!current_imo)
+        return;
+
+    ImGui::LabelText("Listener Count", "%d", current_imo->GetListenerCount());
+    ImGui::LabelText("Memory Size (bytes)", std::to_string(current_imo->GetImageMemorySize()).c_str());
+
     static std::unique_ptr<crsf::TTexture> tex = nullptr;
 
     if (is_changed)
@@ -110,6 +116,7 @@ void CRProfilerModule::on_imgui_avatar_mo()
     if (!current_mo)
         return;
 
+    ImGui::LabelText("Listener Count", "%d", current_mo->GetListenerCount());
     ImGui::LabelText("Memory Size (bytes)", std::to_string(current_mo->GetAvatarMemorySize()).c_str());
     ImGui::LabelText("Joint Count", std::to_string(current_mo->GetAvatarProp().GetJointNumber()).c_str());
 
@@ -201,6 +208,7 @@ void CRProfilerModule::on_imgui_point_mo()
     if (!current_mo)
         return;
 
+    ImGui::LabelText("Listener Count", "%d", current_mo->GetListenerCount());
     ImGui::LabelText("Memory Size (bytes)", std::to_string(current_mo->GetPointMemorySize()).c_str());
 
     const auto& pm = current_mo->GetPointMemory();
@@ -257,6 +265,7 @@ void CRProfilerModule::on_imgui_command_mo()
     if (!current_mo)
         return;
 
+    ImGui::LabelText("Listener Count", "%d", current_mo->GetListenerCount());
     ImGui::LabelText("Memory Size (bytes)", std::to_string(current_mo->GetCommandMemorySize()).c_str());
 
     for (size_t k = 0; k < COMMAND_MAXSIZE; ++k)
@@ -294,6 +303,7 @@ void CRProfilerModule::on_imgui_control_mo()
     if (!current_mo)
         return;
 
+    ImGui::LabelText("Listener Count", "%d", current_mo->GetListenerCount());
     ImGui::LabelText("Memory Size (bytes)", std::to_string(current_mo->GetControlMemorySize()).c_str());
 
     for (size_t k = 0; k < CONTROL_MAXSIZE; ++k)

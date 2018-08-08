@@ -82,8 +82,13 @@ void CRProfilerModule::on_imgui_new_frame()
         {
             if (ImGui::MenuItem("Dynamic Stage Memory"))
                 tools_type = ToolsType::dynamic_stage_memory;
+
             if (ImGui::MenuItem("Network Manager"))
                 tools_type = ToolsType::network_manager;
+
+            if (ImGui::MenuItem("Physics Manager"))
+                tools_type = ToolsType::physics_manager;
+
             ImGui::EndMenu();
         }
 

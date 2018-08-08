@@ -19,41 +19,31 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#pragma once
+#include "crmodules/crprofiler/module.hpp"
 
-#include <luse.h>
+#include <imgui.h>
 
-#include <render_pipeline/rppanda/showbase/direct_object.hpp>
+#include <fmt/format.h>
 
-#include <crsf/CRAPI/TDynamicModuleInterface.h>
+#include <crsf/CREngine/TPhysicsManager.h>
 
-namespace crsf {
-class TDynamicStageMemory;
-class TNetworkManager;
-class TPhysicsManager;
-}
-
-class CRProfilerModule: public crsf::TDynamicModuleInterface, public rppanda::DirectObject
+void CRProfilerModule::on_imgui_physics_manager()
 {
-public:
-    CRProfilerModule(void);
+    if (!pm_->IsInit())
+    {
+        ImGui::Text("Physics Manager is not initialized.");
+        return;
+    }
 
-    void OnLoad(void) override;
-    void OnStart(void) override;
-    void OnExit(void) override;
+    ImGui::LabelText("Engine Type", "%d", pm_->GetPhysicsEngineType());
 
-private:
-    void on_imgui_new_frame();
-    void on_imgui_image_mo();
-    void on_imgui_avatar_mo();
-    void on_imgui_point_mo();
-    void on_imgui_command_mo();
-    void on_imgui_control_mo();
+    if (!pm_->IsStarted())
+        return;
 
-    void on_imgui_network_manager();
-    void on_imgui_physics_manager();
+    int fps = pm_->GetFPS();
+    ImGui::InputInt("FPS", &fps, 1, 100, ImGuiInputTextFlags_ReadOnly);
 
-    crsf::TDynamicStageMemory* dsm_ = nullptr;
-    crsf::TNetworkManager* nm_ = nullptr;
-    crsf::TPhysicsManager* pm_ = nullptr;
-};
+    LVecBase3f gravity = pm_->GetGravity();
+    if (ImGui::InputFloat3("Gravity", &gravity[0]))
+        pm_->SetGravity(gravity);
+}

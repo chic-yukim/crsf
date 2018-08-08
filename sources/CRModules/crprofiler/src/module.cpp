@@ -42,6 +42,7 @@ void CRProfilerModule::OnStart(void)
 {
     dsm_ = crsf::TDynamicStageMemory::GetInstance();
     nm_ = crsf::TNetworkManager::GetInstance();
+    pm_ = crsf::TPhysicsManager::GetInstance();
 
     rppanda::Messenger::get_global_instance()->send(
         "imgui-setup-context",
@@ -67,6 +68,7 @@ void CRProfilerModule::on_imgui_new_frame()
         none = 0,
         dynamic_stage_memory,
         network_manager,
+        physics_manager,
     };
     static ToolsType tools_type = ToolsType::none;
 
@@ -110,6 +112,10 @@ void CRProfilerModule::on_imgui_new_frame()
     else if (tools_type == ToolsType::network_manager)
     {
         on_imgui_network_manager();
+    }
+    else if (tools_type == ToolsType::physics_manager)
+    {
+        on_imgui_physics_manager();
     }
 
     ImGui::End();

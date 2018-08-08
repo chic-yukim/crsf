@@ -27,8 +27,12 @@
 
 #include <crsf/CoexistenceInterface/TDynamicStageMemory.h>
 #include <crsf/CoexistenceInterface/TImageMemoryObject.h>
+#include <crsf/CoexistenceInterface/TPointMemoryObject.h>
 #include <crsf/CoexistenceInterface/TAvatarMemoryObject.h>
+#include <crsf/CoexistenceInterface/TCommandMemoryObject.h>
+#include <crsf/CoexistenceInterface/TControlMemoryObject.h>
 #include <crsf/RenderingEngine/GraphicRenderEngine/TTexture.h>
+#include <crsf/RemoteWorldInterface/TNetworkManager.h>
 
 CRSEEDLIB_MODULE_CREATOR(CRProfilerModule);
 
@@ -43,6 +47,7 @@ void CRProfilerModule::OnLoad(void)
 void CRProfilerModule::OnStart(void)
 {
     dsm_ = crsf::TDynamicStageMemory::GetInstance();
+    nm_ = crsf::TNetworkManager::GetInstance();
 
     rppanda::Messenger::get_global_instance()->send(
         "imgui-setup-context",
@@ -66,25 +71,46 @@ void CRProfilerModule::on_imgui_new_frame()
 
     ImGui::Begin("CRProfiler", &window);
 
-    if (ImGui::CollapsingHeader("Image Memory Object"))
-        on_imgui_image_mo();
+    if (ImGui::CollapsingHeader("Dynamic Stage Memory"))
+    {
+        ImGui::LabelText("System Index", "%d", dsm_->GetSystemIndex());
 
-    if (ImGui::CollapsingHeader("Avatar Memory Object"))
-        on_imgui_avatar_mo();
+        if (ImGui::CollapsingHeader("Image Memory Object"))
+            on_imgui_image_mo();
+
+        if (ImGui::CollapsingHeader("Avatar Memory Object"))
+            on_imgui_avatar_mo();
+
+        if (ImGui::CollapsingHeader("Point Memory Object"))
+            on_imgui_point_mo();
+
+        if (ImGui::CollapsingHeader("Command Memory Object"))
+            on_imgui_command_mo();
+
+        if (ImGui::CollapsingHeader("Control Memory Object"))
+            on_imgui_control_mo();
+    }
+
+    if (ImGui::CollapsingHeader("Network Manager"))
+    {
+        if (nm_->IsInit())
+        {
+            ImGui::LabelText("Status ID", "%d", nm_->GetStatus());
+        }
+    }
 
     ImGui::End();
 }
 
 void CRProfilerModule::on_imgui_image_mo()
 {
-    static ImGuiComboFlags comobo_flags = 0;
     static std::string imo_name;
     static crsf::TImageMemoryObject* current_imo = nullptr;
     if (current_imo)
         imo_name = current_imo->GetProperty().m_strName;
 
     bool is_changed = false;
-    if (ImGui::BeginCombo("Name", imo_name.c_str(), comobo_flags))
+    if (ImGui::BeginCombo("Name###image_mo", imo_name.c_str()))
     {
         for (size_t k = 0, k_end = dsm_->GetNumImageMemoryObject(); k < k_end; ++k)
         {
@@ -124,14 +150,13 @@ void CRProfilerModule::on_imgui_image_mo()
 
 void CRProfilerModule::on_imgui_avatar_mo()
 {
-    static ImGuiComboFlags comobo_flags = 0;
     static std::string mo_name;
     static crsf::TAvatarMemoryObject* current_mo = nullptr;
     if (current_mo)
         mo_name = current_mo->GetProperty().m_strName;
 
     bool is_changed = false;
-    if (ImGui::BeginCombo("Name", mo_name.c_str(), comobo_flags))
+    if (ImGui::BeginCombo("Name###avatar_mo", mo_name.c_str()))
     {
         for (size_t k = 0, k_end = dsm_->GetNumAvatarMemoryObject(); k < k_end; ++k)
         {
@@ -212,4 +237,134 @@ void CRProfilerModule::on_imgui_avatar_mo()
         }
         ImGui::TreePop();
     }
+}
+
+void CRProfilerModule::on_imgui_point_mo()
+{
+    static std::string mo_name;
+    static crsf::TPointMemoryObject* current_mo = nullptr;
+    if (current_mo)
+        mo_name = current_mo->GetProperty().m_strName;
+
+    bool is_changed = false;
+    if (ImGui::BeginCombo("Name###point_mo", mo_name.c_str()))
+    {
+        for (size_t k = 0, k_end = dsm_->GetNumPointMemoryObject(); k < k_end; ++k)
+        {
+            auto mo = dsm_->GetPointMemoryObjectByIndex(k);
+
+            bool is_selected = (current_mo == mo);
+            auto id = fmt::format("{}###{}", mo->GetProperty().m_strName, (void*)mo);
+            if (ImGui::Selectable(id.c_str(), is_selected))
+            {
+                current_mo = mo;
+                is_changed = true;
+            }
+
+            if (is_selected)
+                ImGui::SetItemDefaultFocus();   // Set the initial focus when opening the combo (scrolling + for keyboard navigation support in the upcoming navigation branch)
+        }
+        ImGui::EndCombo();
+    }
+
+    if (!current_mo)
+        return;
+
+    ImGui::LabelText("Memory Size (bytes)", std::to_string(current_mo->GetPointMemorySize()).c_str());
+
+    const auto& pm = current_mo->GetPointMemory();
+    if (pm.empty())
+        return;
+
+    static int index = 0;
+    ImGui::InputInt("Pose Index", &index);
+
+    index = (std::max)(0, (std::min)(index, int(pm.size() - 1)));
+
+    LVecBase3f scale;
+    LVecBase3f pos;
+    LVecBase3f hpr;
+    LVecBase3f shear;
+    pm[index].m_Pose.DecomposeMatrix(scale, shear, hpr, pos);
+
+    const ImGuiInputTextFlags flag = ImGuiInputTextFlags_ReadOnly;
+    ImGui::LabelText("Index", "%d", pm[index].m_nIndex);
+    ImGui::InputFloat3("Position", &pos[0], -1, flag);
+    ImGui::InputFloat3("HPR", &hpr[0], -1, flag);
+    ImGui::InputFloat3("Scale", &scale[0], -1, flag);
+    ImGui::InputFloat3("Shear", &shear[0], -1, flag);
+}
+
+void CRProfilerModule::on_imgui_command_mo()
+{
+    static std::string mo_name;
+    static crsf::TCommandMemoryObject* current_mo = nullptr;
+    if (current_mo)
+        mo_name = current_mo->GetProperty().m_strName;
+
+    bool is_changed = false;
+    if (ImGui::BeginCombo("Name###command_mo", mo_name.c_str()))
+    {
+        for (size_t k = 0, k_end = dsm_->GetNumCommandMemoryObject(); k < k_end; ++k)
+        {
+            auto mo = dsm_->GetCommandMemoryObjectByIndex(k);
+
+            bool is_selected = (current_mo == mo);
+            auto id = fmt::format("{}###{}", mo->GetProperty().m_strName, (void*)mo);
+            if (ImGui::Selectable(id.c_str(), is_selected))
+            {
+                current_mo = mo;
+                is_changed = true;
+            }
+
+            if (is_selected)
+                ImGui::SetItemDefaultFocus();   // Set the initial focus when opening the combo (scrolling + for keyboard navigation support in the upcoming navigation branch)
+        }
+        ImGui::EndCombo();
+    }
+
+    if (!current_mo)
+        return;
+
+    ImGui::LabelText("Memory Size (bytes)", std::to_string(current_mo->GetCommandMemorySize()).c_str());
+
+    for (size_t k = 0; k < COMMAND_MAXSIZE; ++k)
+        ImGui::Text("%d : %d", k, current_mo->GetCommandMemory()[k]);
+}
+
+void CRProfilerModule::on_imgui_control_mo()
+{
+    static std::string mo_name;
+    static crsf::TControlMemoryObject* current_mo = nullptr;
+    if (current_mo)
+        mo_name = current_mo->GetProperty().m_strName;
+
+    bool is_changed = false;
+    if (ImGui::BeginCombo("Name###control_mo", mo_name.c_str()))
+    {
+        for (size_t k = 0, k_end = dsm_->GetNumControlMemoryObject(); k < k_end; ++k)
+        {
+            auto mo = dsm_->GetControlMemoryObjectByIndex(k);
+
+            bool is_selected = (current_mo == mo);
+            auto id = fmt::format("{}###{}", mo->GetProperty().m_strName, (void*)mo);
+            if (ImGui::Selectable(id.c_str(), is_selected))
+            {
+                current_mo = mo;
+                is_changed = true;
+            }
+
+            if (is_selected)
+                ImGui::SetItemDefaultFocus();   // Set the initial focus when opening the combo (scrolling + for keyboard navigation support in the upcoming navigation branch)
+        }
+        ImGui::EndCombo();
+    }
+
+    if (!current_mo)
+        return;
+
+    ImGui::LabelText("Memory Size (bytes)", std::to_string(current_mo->GetControlMemorySize()).c_str());
+
+    for (size_t k = 0; k < CONTROL_MAXSIZE; ++k)
+        ImGui::Text("%d : %d", k, current_mo->GetControlMemory()[k]);
 }

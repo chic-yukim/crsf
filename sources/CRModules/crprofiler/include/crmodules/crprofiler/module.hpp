@@ -29,6 +29,7 @@
 
 namespace crsf {
 class TDynamicStageMemory;
+class TNetworkManager;
 }
 
 class CRProfilerModule: public crsf::TDynamicModuleInterface, public rppanda::DirectObject
@@ -44,6 +45,10 @@ private:
     void on_imgui_new_frame();
     void on_imgui_image_mo();
     void on_imgui_avatar_mo();
+    void on_imgui_point_mo();
+    void on_imgui_command_mo();
+    void on_imgui_control_mo();
 
     crsf::TDynamicStageMemory* dsm_ = nullptr;
+    crsf::TNetworkManager* nm_ = nullptr;
 };

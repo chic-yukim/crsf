@@ -29,6 +29,11 @@
 
 #include <iostream>
 
+#if defined(SPDLOG_VER_MAJOR)
+#include <spdlog/sinks/stdout_color_sinks.h>
+#include <spdlog/sinks/basic_file_sink.h>
+#endif
+
 std::shared_ptr<spdlog::logger> global_logger_;
 static std::vector<std::unique_ptr<boost::dll::shared_library>> dlls_;
 
@@ -44,10 +49,19 @@ void InitLogging(void)
 #else
 	sinks.push_back(std::make_shared<spdlog::sinks::ansicolor_sink>(spdlog::sinks::stdout_sink_mt::instance()));
 #endif
+
+#if defined(SPDLOG_VER_MAJOR)
+    sinks.push_back(std::make_shared<spdlog::sinks::basic_file_sink_mt>("crlauncher.log", true));
+#else
 	sinks.push_back(std::make_shared<spdlog::sinks::simple_file_sink_mt>("crlauncher.log", true));
+#endif
 
 	global_logger_ = std::make_shared<spdlog::logger>("CRLauncher", std::begin(sinks), std::end(sinks));
-	global_logger_->set_pattern("[%H:%M:%S.%e] [%t] [%l] [%n] %v");
+#if defined(SPDLOG_VER_MAJOR)
+	global_logger_->set_pattern("%^[%H:%M:%S.%e] [%t] [%l] [%n] %v%$");
+#else
+    global_logger_->set_pattern("[%H:%M:%S.%e] [%t] [%l] [%n] %v");
+#endif
 	global_logger_->flush_on(spdlog::level::err);
 
 	if (logging_level == "trace")

@@ -2,7 +2,7 @@
 **Languages**: [English](../../framework/module_introduction.md)
 
 CRSF 에서는 여러 기능들을 쉽게 사용하고, 조합해서 재사용하기 위해 모듈 기능을 제공합니다.
-앞서 [프로젝트 구성](project_setup.md)에서 만든 프로젝트가 하나의 모듈이 됩니다.
+앞서 [프로젝트 구성](../project_setup.md)에서 만든 프로젝트가 하나의 모듈이 됩니다.
 
 CRSF 프로젝트는 모듈 단위로 구성이 되고, 어플리케이션을 구성하는 부분도 모듈로 작성할 수 있습니다.
 

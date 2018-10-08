@@ -23,7 +23,11 @@ set(${PROJECT_NAME}_RELWITHDEBINFO_POSTFIX "-reldeb")
 
 # === project specific packages ===========================
 include(FindPackages)
-_find_boost("program_options")
+if(VCPKG_TOOLCHAIN)
+    _find_boost("1.68" "program_options")
+else()
+    _find_boost("1.65.1" "program_options")
+endif()
 # ==================================================================================================
 
 # === target =======================================================================================

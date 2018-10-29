@@ -40,20 +40,20 @@ class OpenVRCameraObject;
 class OpenVRModule: public crsf::TDynamicModuleInterface
 {
 public:
-	OpenVRModule(void);
+	OpenVRModule();
 
-	void OnLoad(void) override;
-	void OnStart(void) override;
-	void OnExit(void) override;
+	void OnLoad() override;
+	void OnStart() override;
+	void OnExit() override;
 
-	virtual crsf::TPointMemoryObject* GetPointMemoryObject(void) const;
+	virtual crsf::TPointMemoryObject* GetPointMemoryObject() const;
 
 	virtual LVecBase3 GetDevicePosition(int index) const;
 	virtual LQuaternion GetDeviceOrientation(int index) const;
 
 	/** Get a pose of HMD in meter. */
-	virtual LVecBase3f GetHMDPosition(void) const;
-	virtual LQuaternionf GetHMDOrientation(void) const;
+	virtual LVecBase3f GetHMDPosition() const;
+	virtual LQuaternionf GetHMDOrientation() const;
 
 	virtual bool IsDeviceConnected(int index) const;
 
@@ -62,13 +62,13 @@ public:
 	virtual bool IsController(int index) const;
 	virtual bool IsTracker(int index) const;
 
-	virtual int GetMaximumDeviceCount(void) const;
+	virtual int GetMaximumDeviceCount() const;
 
-	virtual vr::IVRSystem* GetHMDInstance(void) const;
-	virtual rpplugins::OpenVRPlugin* GetOpenVRPlugin(void) const;
+	virtual vr::IVRSystem* GetHMDInstance() const;
+	virtual rpplugins::OpenVRPlugin* GetOpenVRPlugin() const;
 
-	virtual bool HasCamera(void) const;
-	virtual OpenVRCameraObject* GetCamera(void) const;
+	virtual bool HasCamera() const;
+	virtual OpenVRCameraObject* GetCamera() const;
 	virtual OpenVRCameraObject* CreateCamera();
 
 private:

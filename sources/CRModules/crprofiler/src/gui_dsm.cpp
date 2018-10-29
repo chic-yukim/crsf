@@ -159,19 +159,39 @@ void CRProfilerModule::on_imgui_avatar_mo()
             static int index = 0;
             ImGui::InputInt("Pose Index", &index);
 
+            static bool show_matrix = false;
+            if (ImGui::BeginPopupContextItem())
+            {
+                if (ImGui::Selectable(fmt::format("Show {}", show_matrix ? "Matrix" : "Position/Rotation/Scale").c_str()))
+                    show_matrix = !show_matrix;
+                ImGui::EndPopup();
+            }
+
             index = (std::max)(0, (std::min)(index, int(poses.size() - 1)));
 
-            LVecBase3f scale;
-            LVecBase3f pos;
-            LVecBase3f hpr;
-            LVecBase3f shear;
-            poses[index].DecomposeMatrix(scale, shear, hpr, pos);
+            constexpr ImGuiInputTextFlags flag = ImGuiInputTextFlags_ReadOnly;
+            if (show_matrix)
+            {
+                LMatrix4f mat = poses[index].GetMatrix();
 
-            const ImGuiInputTextFlags flag = ImGuiInputTextFlags_ReadOnly;
-            ImGui::InputFloat3("Position", &pos[0], -1, flag);
-            ImGui::InputFloat3("HPR", &hpr[0], -1, flag);
-            ImGui::InputFloat3("Scale", &scale[0], -1, flag);
-            ImGui::InputFloat3("Shear", &shear[0], -1, flag);
+                ImGui::InputFloat4("Row 0", &mat(0, 0), -1, flag);
+                ImGui::InputFloat4("Row 1", &mat(1, 0), -1, flag);
+                ImGui::InputFloat4("Row 2", &mat(2, 0), -1, flag);
+                ImGui::InputFloat4("Row 3", &mat(3, 0), -1, flag);
+            }
+            else
+            {
+                LVecBase3f scale;
+                LVecBase3f pos;
+                LVecBase3f hpr;
+                LVecBase3f shear;
+                poses[index].DecomposeMatrix(scale, shear, hpr, pos);
+
+                ImGui::InputFloat3("Position", &pos[0], -1, flag);
+                ImGui::InputFloat3("HPR", &hpr[0], -1, flag);
+                ImGui::InputFloat3("Scale", &scale[0], -1, flag);
+                ImGui::InputFloat3("Shear", &shear[0], -1, flag);
+            }
         }
         ImGui::TreePop();
     }

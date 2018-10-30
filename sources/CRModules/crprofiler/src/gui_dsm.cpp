@@ -169,7 +169,7 @@ void CRProfilerModule::on_imgui_avatar_mo()
 
             index = (std::max)(0, (std::min)(index, int(poses.size() - 1)));
 
-            constexpr ImGuiInputTextFlags flag = ImGuiInputTextFlags_ReadOnly;
+            static const ImGuiInputTextFlags flag = ImGuiInputTextFlags_ReadOnly;
             if (show_matrix)
             {
                 LMatrix4f mat = poses[index].GetMatrix();

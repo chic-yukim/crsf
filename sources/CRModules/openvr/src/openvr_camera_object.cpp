@@ -27,12 +27,15 @@
 
 #include <render_pipeline/rpcore/globals.hpp>
 #include <render_pipeline/rppanda/showbase/showbase.hpp>
+#include <render_pipeline/rppanda/showbase/messenger.hpp>
 
 #include <openvr_plugin.hpp>
 #include <openvr_camera_interface.hpp>
 
 #include <crsf/RenderingEngine/TGraphicRenderEngine.h>
 #include <crsf/RenderingEngine/GraphicRenderEngine/TTexture.h>
+
+const char* OpenVRCameraObject::UPDATE_EVENT_NAME = "OpenVRCameraObject::Update";
 
 OpenVRCameraObject::OpenVRCameraObject(OpenVRModule& module_instance) :
 	crsf::TPhysicalCamera(NodePath(module_instance.GetOpenVRPlugin()->get_tracked_camera()->create_camera_node())), module_(module_instance)
@@ -98,6 +101,8 @@ AsyncTask::DoneStatus OpenVRCameraObject::Update(rppanda::FunctionalTask* task)
 	}
 
 	frame_header_ = new_frame_header;
+
+    rpcore::Globals::base->get_messenger()->send("OpenVRCameraObject::Update", false);
 
 	return AsyncTask::DS_cont;
 }

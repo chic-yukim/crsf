@@ -19,42 +19,19 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#pragma once
+#include "crmodules/crprofiler/module.hpp"
 
-#include <luse.h>
+#include <imgui.h>
 
-#include <render_pipeline/rppanda/showbase/direct_object.hpp>
+#include <fmt/format.h>
 
-#include <crsf/CRAPI/TDynamicModuleInterface.h>
+#include <crsf/System/TLogger.h>
 
-namespace crsf {
-class TDynamicStageMemory;
-class TNetworkManager;
-class TPhysicsManager;
-}
-
-class CRProfilerModule: public crsf::TDynamicModuleInterface, public rppanda::DirectObject
+void CRProfilerModule::on_imgui_main()
 {
-public:
-    CRProfilerModule(void);
+    static const char* levels[] = { "trace", "debug", "info", "warn", "error", "critical", "off" };
 
-    void OnLoad(void) override;
-    void OnStart(void) override;
-    void OnExit(void) override;
-
-private:
-    void on_imgui_new_frame();
-    void on_imgui_main();
-    void on_imgui_image_mo();
-    void on_imgui_avatar_mo();
-    void on_imgui_point_mo();
-    void on_imgui_command_mo();
-    void on_imgui_control_mo();
-
-    void on_imgui_network_manager();
-    void on_imgui_physics_manager();
-
-    crsf::TDynamicStageMemory* dsm_ = nullptr;
-    crsf::TNetworkManager* nm_ = nullptr;
-    crsf::TPhysicsManager* pm_ = nullptr;
-};
+    int current_level = static_cast<int>(crsf::GetLogLevel());
+    if (ImGui::Combo("Log Level", &current_level, levels, std::extent<decltype(levels)>::value, -1))
+        crsf::SetLogLevel(static_cast<crsf::LogLevels>(current_level));
+}

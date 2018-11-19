@@ -81,6 +81,9 @@ void CRProfilerModule::on_imgui_new_frame()
     {
         if (ImGui::BeginMenu("Tools"))
         {
+            if (ImGui::MenuItem("Main"))
+                tools_type = ToolsType::main;
+
             if (ImGui::MenuItem("Dynamic Stage Memory"))
                 tools_type = ToolsType::dynamic_stage_memory;
 

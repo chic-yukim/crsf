@@ -119,7 +119,7 @@ void CRProfilerModule::on_imgui_avatar_mo()
 
     ImGui::LabelText("System Index", "%d", current_mo->GetSystemIndex());
     ImGui::LabelText("Listener Count", "%d", current_mo->GetListenerCount());
-    ImGui::LabelText("Memory Size (bytes)", std::to_string(current_mo->GetAvatarMemorySize()).c_str());
+    ImGui::LabelText("Memory Size (bytes)", std::to_string(current_mo->GetBinaryAvatarMemorySize()).c_str());
     ImGui::LabelText("Joint Count", std::to_string(current_mo->GetAvatarProp().GetJointNumber()).c_str());
 
     if (ImGui::TreeNode("Avatar Headers"))

@@ -31,6 +31,7 @@
 #include <crsf/CoexistenceInterface/TAvatarMemoryObject.h>
 #include <crsf/CoexistenceInterface/TCommandMemoryObject.h>
 #include <crsf/CoexistenceInterface/TControlMemoryObject.h>
+#include <crsf/CoexistenceInterface/TSoundMemoryObject.h>
 #include <crsf/RenderingEngine/GraphicRenderEngine/TTexture.h>
 
 void CRProfilerModule::on_imgui_image_mo()
@@ -332,4 +333,46 @@ void CRProfilerModule::on_imgui_control_mo()
 
     for (size_t k = 0; k < CONTROL_MAXSIZE; ++k)
         ImGui::Text("%d : %d", k, current_mo->GetControlMemory()[k]);
+}
+
+void CRProfilerModule::on_imgui_sound_mo()
+{
+    static std::string mo_name;
+    static crsf::TSoundMemoryObject* current_mo = nullptr;
+    if (current_mo)
+        mo_name = current_mo->GetProperty().m_strName;
+
+    bool is_changed = false;
+    if (ImGui::BeginCombo("Name###sound_mo", mo_name.c_str()))
+    {
+        for (size_t k = 0, k_end = dsm_->GetNumSoundMemoryObject(); k < k_end; ++k)
+        {
+            auto mo = dsm_->GetSoundMemoryObjectByIndex(k);
+
+            bool is_selected = (current_mo == mo);
+            auto id = fmt::format("{}###{}", mo->GetProperty().m_strName, (void*)mo);
+            if (ImGui::Selectable(id.c_str(), is_selected))
+            {
+                current_mo = mo;
+                is_changed = true;
+            }
+
+            if (is_selected)
+                ImGui::SetItemDefaultFocus();   // Set the initial focus when opening the combo (scrolling + for keyboard navigation support in the upcoming navigation branch)
+        }
+        ImGui::EndCombo();
+    }
+
+    if (!current_mo)
+        return;
+
+    ImGui::LabelText("System Index", "%d", current_mo->GetSystemIndex());
+    ImGui::LabelText("Listener Count", "%d", current_mo->GetListenerCount());
+    ImGui::LabelText("Memory Size (bytes)", std::to_string(current_mo->GetSoundMemorySize()).c_str());
+
+    const auto& props = current_mo->GetSoundProp();
+    ImGui::LabelText("Channel (In)", "%d", props.m_nInChannel);
+    ImGui::LabelText("Channel (Out)", "%d", props.m_nOutChannel);
+    ImGui::LabelText("Buffer Size", "%d", props.m_nBufferSize);
+    ImGui::LabelText("Sample Size", "%d", props.m_nSampleSize);
 }

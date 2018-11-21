@@ -123,6 +123,9 @@ void CRProfilerModule::on_imgui_new_frame()
             if (ImGui::CollapsingHeader("Control Memory Object"))
                 on_imgui_control_mo();
 
+            if (ImGui::CollapsingHeader("Sound Memory Object"))
+                on_imgui_sound_mo();
+
             break;
         }
         case ToolsType::network_manager:

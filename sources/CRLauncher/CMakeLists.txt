@@ -1,6 +1,6 @@
 # Author: Younguk Kim (bluekyu)
 
-cmake_minimum_required(VERSION 3.11.4...3.12)
+cmake_minimum_required(VERSION 3.12)
 project(CRLauncher
     VERSION 3.0.0
     DESCRIPTION "Launcher for CRSF"

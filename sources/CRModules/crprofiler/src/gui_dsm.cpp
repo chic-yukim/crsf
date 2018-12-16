@@ -373,6 +373,5 @@ void CRProfilerModule::on_imgui_sound_mo()
     const auto& props = current_mo->GetSoundProp();
     ImGui::LabelText("Channel (In)", "%d", props.m_nInChannel);
     ImGui::LabelText("Channel (Out)", "%d", props.m_nOutChannel);
-    ImGui::LabelText("Buffer Size", "%d", props.m_nBufferSize);
     ImGui::LabelText("Sample Size", "%d", props.m_nSampleSize);
 }

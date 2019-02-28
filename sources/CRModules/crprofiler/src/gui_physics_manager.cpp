@@ -29,12 +29,6 @@
 
 void CRProfilerModule::on_imgui_physics_manager()
 {
-    if (!pm_->IsInit())
-    {
-        ImGui::Text("Physics Manager is not initialized.");
-        return;
-    }
-
     ImGui::LabelText("Engine Type", "%d", pm_->GetPhysicsEngineType());
 
     if (!pm_->IsStarted())

@@ -70,7 +70,7 @@ target_include_directories(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME}
     PRIVATE $<$<NOT:$<BOOL:${Boost_USE_STATIC_LIBS}>>:Boost::dynamic_linking>
-    Boost::thread Boost::program_options CRSeedLib
+    Boost::program_options CRSeedLib
     fmt::fmt-header-only spdlog::spdlog
 )
 

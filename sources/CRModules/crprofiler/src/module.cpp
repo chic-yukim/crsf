@@ -126,6 +126,9 @@ void CRProfilerModule::on_imgui_new_frame()
             if (ImGui::CollapsingHeader("Sound Memory Object"))
                 on_imgui_sound_mo();
 
+            if (ImGui::CollapsingHeader("Binary Memory Object"))
+                on_imgui_binary_mo();
+
             break;
         }
         case ToolsType::network_manager:

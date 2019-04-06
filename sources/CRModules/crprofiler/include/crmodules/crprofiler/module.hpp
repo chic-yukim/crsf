@@ -51,6 +51,7 @@ private:
     void on_imgui_command_mo();
     void on_imgui_control_mo();
     void on_imgui_sound_mo();
+    void on_imgui_binary_mo();
 
     void on_imgui_network_manager();
     void on_imgui_physics_manager();

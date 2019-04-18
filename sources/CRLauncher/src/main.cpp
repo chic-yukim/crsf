@@ -35,9 +35,6 @@ void exit_application(void);
 
 int main(int argc, char* argv[])
 {
-	if (!load_dlls())
-		return 1;
-
 	boost::program_options::options_description option_desc("Options");
 	setup_program_options(option_desc);
 

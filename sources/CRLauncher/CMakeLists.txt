@@ -74,21 +74,6 @@ target_link_libraries(${PROJECT_NAME}
     fmt::fmt-header-only spdlog::spdlog
 )
 
-if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-    windows_add_delay_load(${PROJECT_NAME}
-        "CRSeedLib.dll;render_pipeline.dll;"
-        RELEASE
-    )
-    windows_add_delay_load(${PROJECT_NAME}
-        "CRSeedLib-reldeb.dll;render_pipeline.dll;"
-        RELWITHDEBINFO
-    )
-    windows_add_delay_load(${PROJECT_NAME}
-        "CRSeedLib-debug.dll;render_pipeline-debug.dll;"
-        DEBUG
-    )
-endif()
-
 set_target_properties(${PROJECT_NAME} PROPERTIES
     FOLDER "crsf"
     DEBUG_POSTFIX ${${PROJECT_NAME}_DEBUG_POSTFIX}

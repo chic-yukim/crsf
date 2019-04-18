@@ -26,4 +26,3 @@
 extern std::shared_ptr<spdlog::logger> global_logger_;
 
 void InitLogging(void);
-bool load_dlls();

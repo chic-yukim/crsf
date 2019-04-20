@@ -33,45 +33,44 @@ AsyncTask::DoneStatus start_application(rppanda::FunctionalTask*);
 
 AsyncTask::DoneStatus initiailze_application(rppanda::FunctionalTask*)
 {
-	global_logger_->trace("Initializing main application.");
+    global_logger_->trace("Initializing main application.");
 
-	crsf::TInterfaceManager::GetInstance()->Init();
+    crsf::TInterfaceManager::GetInstance()->Init();
 
-	// load TDynamicModuleManager
-	crsf::TDynamicModuleManager::GetInstance()->LoadModules();
+    // load TDynamicModuleManager
+    crsf::TDynamicModuleManager::GetInstance()->LoadModules();
 
-	rppanda::TaskManager::get_global_instance()->add(load_application, "CRLauncher::load_application");
+    rppanda::TaskManager::get_global_instance()->add(load_application, "CRLauncher::load_application");
 
-	return AsyncTask::DS_done;
+    return AsyncTask::DS_done;
 }
 
 AsyncTask::DoneStatus load_application(rppanda::FunctionalTask*)
 {
-	global_logger_->trace("Loading main application.");
+    global_logger_->trace("Loading main application.");
 
-	crsf::TDynamicModuleManager::GetInstance()->OnLoad();
+    crsf::TDynamicModuleManager::GetInstance()->OnLoad();
 
-	crsf::TInterfaceManager::GetInstance()->ConnectInputOutputInterface();
+    crsf::TInterfaceManager::GetInstance()->ConnectInputOutputInterface();
 
-	rppanda::TaskManager::get_global_instance()->add(start_application, "CRLauncher::start_application");
+    rppanda::TaskManager::get_global_instance()->add(start_application, "CRLauncher::start_application");
 
-	return AsyncTask::DS_done;
+    return AsyncTask::DS_done;
 }
 
 AsyncTask::DoneStatus start_application(rppanda::FunctionalTask*)
 {
-	global_logger_->trace("Starting main application.");
+    global_logger_->trace("Starting main application.");
 
-	crsf::TDynamicModuleManager::GetInstance()->OnStart();
+    crsf::TDynamicModuleManager::GetInstance()->OnStart();
 
-	return AsyncTask::DS_done;
+    return AsyncTask::DS_done;
 }
 
 void exit_application(void)
 {
-	global_logger_->trace("Exiting main application.");
+    global_logger_->trace("Exiting main application.");
 
-	crsf::TInterfaceManager::GetInstance()->Exit();
-	crsf::TDynamicModuleManager::GetInstance()->OnExit();
-	crsf::TGraphicRenderEngine::GetInstance()->Exit();
+    crsf::TInterfaceManager::GetInstance()->Exit();
+    crsf::TDynamicModuleManager::GetInstance()->OnExit();
 }

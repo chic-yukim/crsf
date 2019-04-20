@@ -35,41 +35,43 @@ void exit_application(void);
 
 int main(int argc, char* argv[])
 {
-	boost::program_options::options_description option_desc("Options");
-	setup_program_options(option_desc);
+    boost::program_options::options_description option_desc("Options");
+    setup_program_options(option_desc);
 
-	boost::program_options::variables_map vm;
-	boost::program_options::store(boost::program_options::parse_command_line(argc, argv, option_desc), vm);
-	boost::program_options::notify(vm);
+    boost::program_options::variables_map vm;
+    boost::program_options::store(boost::program_options::parse_command_line(argc, argv, option_desc), vm);
+    boost::program_options::notify(vm);
 
-	if (vm.count("help"))
-	{
-		std::cout << option_desc << std::endl;
-		return 0;
-	}
+    if (vm.count("help"))
+    {
+        std::cout << option_desc << std::endl;
+        return 0;
+    }
 
-	if (vm.count("config-file"))
-	{
-		crsf::TSystemConfiguration::GetInstance()->ChangeSystemPropertyFilePath(vm["config-file"].as<std::string>());
-	}
+    if (vm.count("config-file"))
+    {
+        crsf::TSystemConfiguration::GetInstance()->ChangeSystemPropertyFilePath(vm["config-file"].as<std::string>());
+    }
 
-	crsf::InitializeLoggerSink();
-	InitLogging();
+    crsf::InitializeLoggerSink();
+    InitLogging();
 
-	crsf::TGraphicRenderEngine* rendering_engine = crsf::TGraphicRenderEngine::GetInstance();
-	rendering_engine->SetRenderingScaleFactor(5.0f);
+    crsf::TGraphicRenderEngine* rendering_engine = crsf::TGraphicRenderEngine::GetInstance();
+    rendering_engine->SetRenderingScaleFactor(5.0f);
 
-	rppanda::TaskManager::get_global_instance()->add(initiailze_application, "CRLauncher::initiailze_application");
+    rppanda::TaskManager::get_global_instance()->add(initiailze_application, "CRLauncher::initiailze_application");
 
-	// initialize and loop rendering engine.
-	rendering_engine->Start();
+    // initialize and loop rendering engine.
+    rendering_engine->Start();
 
     exit_application();
 
-	// clear rendering engine.
-	rendering_engine->Clear();
+    rendering_engine->Exit();
 
-	crsf::FinalizeLoggerSink();
+    // clear rendering engine.
+    rendering_engine->Clear();
 
-	return 0;
+    crsf::FinalizeLoggerSink();
+
+    return 0;
 }

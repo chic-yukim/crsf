@@ -27,8 +27,6 @@
 #include <crsf/System/TLogger.h>
 #include <crsf/System/TSystemConfiguration.h>
 
-#include "config.h"
-
 void setup_program_options(boost::program_options::options_description& desc);
 AsyncTask::DoneStatus initiailze_application(rppanda::FunctionalTask*);
 void exit_application(void);
@@ -54,7 +52,6 @@ int main(int argc, char* argv[])
     }
 
     crsf::InitializeLoggerSink();
-    InitLogging();
 
     crsf::TGraphicRenderEngine* rendering_engine = crsf::TGraphicRenderEngine::GetInstance();
     rendering_engine->SetRenderingScaleFactor(5.0f);

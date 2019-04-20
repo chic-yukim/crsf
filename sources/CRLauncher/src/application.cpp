@@ -26,15 +26,11 @@
 #include <crsf/RenderingEngine/TGraphicRenderEngine.h>
 #include <crsf/CREngine/TDynamicModuleManager.h>
 
-#include "config.h"
-
 AsyncTask::DoneStatus load_application(rppanda::FunctionalTask*);
 AsyncTask::DoneStatus start_application(rppanda::FunctionalTask*);
 
 AsyncTask::DoneStatus initiailze_application(rppanda::FunctionalTask*)
 {
-    global_logger_->trace("Initializing main application.");
-
     crsf::TInterfaceManager::GetInstance()->Init();
 
     // load TDynamicModuleManager
@@ -47,8 +43,6 @@ AsyncTask::DoneStatus initiailze_application(rppanda::FunctionalTask*)
 
 AsyncTask::DoneStatus load_application(rppanda::FunctionalTask*)
 {
-    global_logger_->trace("Loading main application.");
-
     crsf::TDynamicModuleManager::GetInstance()->OnLoad();
 
     crsf::TInterfaceManager::GetInstance()->ConnectInputOutputInterface();
@@ -60,8 +54,6 @@ AsyncTask::DoneStatus load_application(rppanda::FunctionalTask*)
 
 AsyncTask::DoneStatus start_application(rppanda::FunctionalTask*)
 {
-    global_logger_->trace("Starting main application.");
-
     crsf::TDynamicModuleManager::GetInstance()->OnStart();
 
     return AsyncTask::DS_done;
@@ -69,8 +61,6 @@ AsyncTask::DoneStatus start_application(rppanda::FunctionalTask*)
 
 void exit_application(void)
 {
-    global_logger_->trace("Exiting main application.");
-
     crsf::TInterfaceManager::GetInstance()->Exit();
     crsf::TDynamicModuleManager::GetInstance()->OnExit();
 }

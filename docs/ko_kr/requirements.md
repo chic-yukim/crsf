@@ -7,7 +7,7 @@
 ## 소프트웨어
 - Windows 10 64bit
 - Visual Studio
-  - Visual Studio 2013: https://www.visualstudio.com/vs/older-downloads/
+  - Visual Studio 2013 Update 5: https://www.visualstudio.com/vs/older-downloads/
   - Visual Studio 2017
 - CMake: https://cmake.org/download/
 

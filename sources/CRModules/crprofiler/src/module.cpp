@@ -66,12 +66,12 @@ void CRProfilerModule::on_imgui_new_frame()
     static bool window = true;
     enum class ToolsType
     {
-        none = 0,
+        main = 0,
         dynamic_stage_memory,
         network_manager,
         physics_manager,
     };
-    static ToolsType tools_type = ToolsType::none;
+    static ToolsType tools_type = ToolsType::main;
 
     ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar;
 
@@ -81,6 +81,9 @@ void CRProfilerModule::on_imgui_new_frame()
     {
         if (ImGui::BeginMenu("Tools"))
         {
+            if (ImGui::MenuItem("Main"))
+                tools_type = ToolsType::main;
+
             if (ImGui::MenuItem("Dynamic Stage Memory"))
                 tools_type = ToolsType::dynamic_stage_memory;
 
@@ -96,32 +99,44 @@ void CRProfilerModule::on_imgui_new_frame()
         ImGui::EndMenuBar();
     }
 
-    if (tools_type == ToolsType::dynamic_stage_memory)
+    switch (tools_type)
     {
-        ImGui::LabelText("System Index", "%d", dsm_->GetSystemIndex());
+        case ToolsType::main:
+            on_imgui_main();
+            break;
+        case ToolsType::dynamic_stage_memory:
+        {
+            ImGui::LabelText("System Index", "%d", dsm_->GetSystemIndex());
 
-        if (ImGui::CollapsingHeader("Image Memory Object"))
-            on_imgui_image_mo();
+            if (ImGui::CollapsingHeader("Image Memory Object"))
+                on_imgui_image_mo();
 
-        if (ImGui::CollapsingHeader("Avatar Memory Object"))
-            on_imgui_avatar_mo();
+            if (ImGui::CollapsingHeader("Avatar Memory Object"))
+                on_imgui_avatar_mo();
 
-        if (ImGui::CollapsingHeader("Point Memory Object"))
-            on_imgui_point_mo();
+            if (ImGui::CollapsingHeader("Point Memory Object"))
+                on_imgui_point_mo();
 
-        if (ImGui::CollapsingHeader("Command Memory Object"))
-            on_imgui_command_mo();
+            if (ImGui::CollapsingHeader("Command Memory Object"))
+                on_imgui_command_mo();
 
-        if (ImGui::CollapsingHeader("Control Memory Object"))
-            on_imgui_control_mo();
-    }
-    else if (tools_type == ToolsType::network_manager)
-    {
-        on_imgui_network_manager();
-    }
-    else if (tools_type == ToolsType::physics_manager)
-    {
-        on_imgui_physics_manager();
+            if (ImGui::CollapsingHeader("Control Memory Object"))
+                on_imgui_control_mo();
+
+            if (ImGui::CollapsingHeader("Sound Memory Object"))
+                on_imgui_sound_mo();
+
+            if (ImGui::CollapsingHeader("Binary Memory Object"))
+                on_imgui_binary_mo();
+
+            break;
+        }
+        case ToolsType::network_manager:
+            on_imgui_network_manager();
+            break;
+        case ToolsType::physics_manager:
+            on_imgui_physics_manager();
+            break;
     }
 
     ImGui::End();

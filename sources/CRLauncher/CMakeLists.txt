@@ -1,6 +1,6 @@
 # Author: Younguk Kim (bluekyu)
 
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.12)
 project(CRLauncher
     VERSION 3.0.0
     DESCRIPTION "Launcher for CRSF"
@@ -23,7 +23,11 @@ set(${PROJECT_NAME}_RELWITHDEBINFO_POSTFIX "-reldeb")
 
 # === project specific packages ===========================
 include(FindPackages)
-_find_boost("program_options")
+if(VCPKG_TOOLCHAIN)
+    _find_boost("1.68" "program_options")
+else()
+    _find_boost("1.65.1" "program_options")
+endif()
 # ==================================================================================================
 
 # === target =======================================================================================
@@ -61,29 +65,13 @@ target_compile_definitions(${PROJECT_NAME}
 )
 
 target_include_directories(${PROJECT_NAME}
-    PRIVATE "${PROJECT_BINARY_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}/src"
+    PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/src"
 )
 
 target_link_libraries(${PROJECT_NAME}
     PRIVATE $<$<NOT:$<BOOL:${Boost_USE_STATIC_LIBS}>>:Boost::dynamic_linking>
-    Boost::thread Boost::program_options CRSeedLib
-    fmt::fmt-header-only spdlog::spdlog
+    Boost::program_options CRSeedLib
 )
-
-if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-    windows_add_delay_load(${PROJECT_NAME}
-        "CRSeedLib.dll;render_pipeline.dll;"
-        RELEASE
-    )
-    windows_add_delay_load(${PROJECT_NAME}
-        "CRSeedLib-reldeb.dll;render_pipeline.dll;"
-        RELWITHDEBINFO
-    )
-    windows_add_delay_load(${PROJECT_NAME}
-        "CRSeedLib-debug.dll;render_pipeline-debug.dll;"
-        DEBUG
-    )
-endif()
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
     FOLDER "crsf"

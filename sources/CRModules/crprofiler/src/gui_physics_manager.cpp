@@ -29,9 +29,9 @@
 
 void CRProfilerModule::on_imgui_physics_manager()
 {
-    if (!pm_->IsInit())
+    if (!pm_->IsStarted())
     {
-        ImGui::Text("Physics Manager is not initialized.");
+        ImGui::Text("Physics Manager is not Started.");
         return;
     }
 

@@ -26,8 +26,8 @@
 #include <render_pipeline/rpcore/globals.hpp>
 #include <render_pipeline/rppanda/showbase/showbase.hpp>
 
-#include <openvr_plugin.hpp>
-#include <openvr_camera_interface.hpp>
+#include <rpplugins/openvr/plugin.hpp>
+#include <rpplugins/openvr/camera_interface.hpp>
 
 #include <spdlog/spdlog.h>
 
@@ -61,8 +61,8 @@ struct OpenVRModule::Impl
 
 	Impl(OpenVRModule& self);
 
-	void OnLoad(void);
-	void OnExit(void);
+	void OnLoad();
+	void OnExit();
 
 public:
 	OpenVRModule& self_;
@@ -121,7 +121,7 @@ OpenVRModule::Impl::Impl(OpenVRModule& self): self_(self)
 	}
 }
 
-void OpenVRModule::Impl::OnLoad(void)
+void OpenVRModule::Impl::OnLoad()
 {
 	self_.m_logger->trace("Initializing OpenVRModule.");
 
@@ -145,7 +145,7 @@ void OpenVRModule::Impl::OnLoad(void)
 	self_.m_logger->info("OpenVRModule was initialized.");
 }
 
-void OpenVRModule::Impl::OnExit(void)
+void OpenVRModule::Impl::OnExit()
 {
 	self_.m_logger->trace("Exiting OpenVRModule.");
 
@@ -159,20 +159,20 @@ void OpenVRModule::Impl::OnExit(void)
 }
 
 // ************************************************************************************************
-OpenVRModule::OpenVRModule(void): TDynamicModuleInterface(CRMODULE_ID_STRING), impl_(std::make_unique<Impl>(*this))
+OpenVRModule::OpenVRModule(): TDynamicModuleInterface(CRMODULE_ID_STRING), impl_(std::make_unique<Impl>(*this))
 {
 }
 
-void OpenVRModule::OnLoad(void)
+void OpenVRModule::OnLoad()
 {
 	impl_->OnLoad();
 }
 
-void OpenVRModule::OnStart(void)
+void OpenVRModule::OnStart()
 {
 }
 
-void OpenVRModule::OnExit(void)
+void OpenVRModule::OnExit()
 {
 	impl_->OnExit();
 }
@@ -199,12 +199,12 @@ LQuaternionf OpenVRModule::GetDeviceOrientation(int index) const
 	return impl_->device_point_memory_->GetPointMemory(index).m_Pose.GetQuaternion();
 }
 
-LVecBase3f OpenVRModule::GetHMDPosition(void) const
+LVecBase3f OpenVRModule::GetHMDPosition() const
 {
 	return GetDevicePosition(vr::k_unTrackedDeviceIndex_Hmd);
 }
 
-LQuaternionf OpenVRModule::GetHMDOrientation(void) const
+LQuaternionf OpenVRModule::GetHMDOrientation() const
 {
 	return GetDeviceOrientation(vr::k_unTrackedDeviceIndex_Hmd);
 }
@@ -234,32 +234,32 @@ bool OpenVRModule::IsTracker(int index) const
 	return GetHMDInstance()->GetTrackedDeviceClass(index) == vr::TrackedDeviceClass_GenericTracker;
 }
 
-int OpenVRModule::GetMaximumDeviceCount(void) const
+int OpenVRModule::GetMaximumDeviceCount() const
 {
 	return vr::k_unMaxTrackedDeviceCount;
 }
 
-vr::IVRSystem* OpenVRModule::GetHMDInstance(void) const
+vr::IVRSystem* OpenVRModule::GetHMDInstance() const
 {
 	return impl_->plugin_->get_vr_system();
 }
 
-rpplugins::OpenVRPlugin* OpenVRModule::GetOpenVRPlugin(void) const
+rpplugins::OpenVRPlugin* OpenVRModule::GetOpenVRPlugin() const
 {
 	return impl_->plugin_;
 }
 
-crsf::TPointMemoryObject* OpenVRModule::GetPointMemoryObject(void) const
+crsf::TPointMemoryObject* OpenVRModule::GetPointMemoryObject() const
 {
 	return impl_->device_point_memory_;
 }
 
-bool OpenVRModule::HasCamera(void) const
+bool OpenVRModule::HasCamera() const
 {
 	return impl_->plugin_->has_tracked_camera();
 }
 
-OpenVRCameraObject* OpenVRModule::GetCamera(void) const
+OpenVRCameraObject* OpenVRModule::GetCamera() const
 {
 	return impl_->camera_.get();
 }

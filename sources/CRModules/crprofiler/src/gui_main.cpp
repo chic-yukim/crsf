@@ -19,11 +19,19 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#pragma once
+#include "crmodules/crprofiler/module.hpp"
 
-#include <spdlog/spdlog.h>
+#include <imgui.h>
 
-extern std::shared_ptr<spdlog::logger> global_logger_;
+#include <fmt/format.h>
 
-void InitLogging(void);
-bool load_dlls();
+#include <crsf/System/TLogger.h>
+
+void CRProfilerModule::on_imgui_main()
+{
+    static const char* levels[] = { "trace", "debug", "info", "warn", "error", "critical", "off" };
+
+    int current_level = static_cast<int>(crsf::GetLogLevel());
+    if (ImGui::Combo("Log Level", &current_level, levels, std::extent<decltype(levels)>::value, -1))
+        crsf::SetLogLevel(static_cast<crsf::LogLevels>(current_level));
+}

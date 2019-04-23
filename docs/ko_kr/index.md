@@ -10,3 +10,7 @@
 
 ## 프레임워크
 - [모듈 소개](framework/module_introduction.md)
+
+
+## 기타
+- [이슈 및 해결방법](issues_and_solutions.md)

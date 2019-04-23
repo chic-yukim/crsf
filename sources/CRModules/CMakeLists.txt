@@ -1,3 +1,5 @@
+cmake_minimum_required(VERSION 3.12)
+
 # === configure ====================================================================================
 # find CRSF SDK
 if(NOT CRSF_SDK_DIR)

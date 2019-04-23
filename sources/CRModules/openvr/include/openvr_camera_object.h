@@ -38,6 +38,9 @@ class TImageMemoryObject;
 class OpenVRCameraObject: public crsf::TPhysicalCamera
 {
 public:
+    static const char* UPDATE_EVENT_NAME;
+
+public:
     /** Create new phsyical camera instance. */
     OpenVRCameraObject(OpenVRModule& module_instance);
 

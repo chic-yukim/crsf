@@ -26,13 +26,8 @@
 #include <render_pipeline/rpcore/globals.hpp>
 #include <render_pipeline/rppanda/showbase/showbase.hpp>
 
-#if _MSC_VER > 1900
 #include <rpplugins/openvr/plugin.hpp>
 #include <rpplugins/openvr/camera_interface.hpp>
-#else
-#include <openvr_plugin.hpp>
-#include <openvr_camera_interface.hpp>
-#endif
 
 #include <spdlog/spdlog.h>
 

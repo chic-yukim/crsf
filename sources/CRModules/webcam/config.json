@@ -1,0 +1,10 @@
+{
+    "information":
+    {
+        "category" : "real_interface",
+        "name": "Webcam Module",
+        "author": "Younguk Kim <yukim@chic.re.kr>",
+        "version": "0.1",
+        "description": "This is Webcam module."
+    }
+}

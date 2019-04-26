@@ -20,6 +20,7 @@ set(CRMODULE_CONFIG_IN_FILE "${CMAKE_CURRENT_SOURCE_DIR}/crmodule-config.cmake.i
 set(CRSF_MODULES
     "crprofiler"
     "openvr"
+    "webcam"
 )
 
 foreach(module_id ${CRSF_MODULES})

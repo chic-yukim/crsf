@@ -18,13 +18,13 @@ if(NOT CRSF_SDK_DIR)
 endif()
 list(APPEND CMAKE_MODULE_PATH "${CRSF_SDK_DIR}/cmake")
 
-set(CRMODULE_INSTALL_DIR "${CRSeedLib_MODULE_DIR}/${CRMODULE_ID}")
-
 # === project specific packages ===
 include(FindPackages)
 
 set(${PROJECT_NAME}_MACRO_CMAKE_FILE "${PROJECT_SOURCE_DIR}/cmake/${PROJECT_NAME}-macro.cmake")
 include(${${PROJECT_NAME}_MACRO_CMAKE_FILE})
+
+set(CRMODULE_INSTALL_DIR "${CRSeedLib_MODULE_DIR}/${CRMODULE_ID}")
 # ==================================================================================================
 
 # === target =======================================================================================

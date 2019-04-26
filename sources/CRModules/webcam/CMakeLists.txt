@@ -21,11 +21,6 @@ list(APPEND CMAKE_MODULE_PATH "${CRSF_SDK_DIR}/cmake")
 # === project specific packages ===
 include(FindPackages)
 
-find_package(imgui CONFIG REQUIRED)
-
-set(${PROJECT_NAME}_MACRO_CMAKE_FILE "${PROJECT_SOURCE_DIR}/cmake/${PROJECT_NAME}-macro.cmake")
-include(${${PROJECT_NAME}_MACRO_CMAKE_FILE})
-
 set(CRMODULE_INSTALL_DIR "${CRSeedLib_MODULE_DIR}/${CRMODULE_ID}")
 # ==================================================================================================
 
@@ -49,13 +44,12 @@ target_compile_definitions(${PROJECT_NAME}
 target_include_directories(${PROJECT_NAME}
     PRIVATE "${PROJECT_BINARY_DIR}" "${PROJECT_SOURCE_DIR}/include"
     "${CMAKE_CURRENT_SOURCE_DIR}/src"
+    ${OpenCV_INCLUDE_DIRS}
 )
 
 target_link_libraries(${PROJECT_NAME}
-    PRIVATE CRSeedLib
-    fmt::fmt-header-only spdlog::spdlog
-
-    imgui::imgui
+    PRIVATE CRSeedLib fmt::fmt-header-only spdlog::spdlog
+    ${OpenCV_LIBS}
 )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
@@ -85,7 +79,7 @@ target_include_directories(${CRMODULE_ID}
 )
 
 target_link_libraries(${CRMODULE_ID}
-    INTERFACE CRSeedLib rpplugins::openvr
+    INTERFACE CRSeedLib
 )
 
 # configure package

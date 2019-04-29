@@ -4,6 +4,7 @@
 ## 시작하기
 - [요구사항](requirements.md)
 - [프로젝트 구성하기](project_setup.md)
+- [여러 프로젝트 구성하기](multi_project_setup.md)
 - [CRSF 폴더 구조](directory_structures.md)
 
 

@@ -12,6 +12,8 @@
 ## 프레임워크
 - [모듈 소개](framework/module_introduction.md)
 
+## 모듈
+- [CRSF 모듈 리스트](https://github.com/chic-yukim/crsf/wiki/CRSF-Modules)
 
 ## 기타
 - [이슈 및 해결방법](issues_and_solutions.md)

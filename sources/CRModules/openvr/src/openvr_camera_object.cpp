@@ -38,7 +38,7 @@
 const char* OpenVRCameraObject::UPDATE_EVENT_NAME = "OpenVRCameraObject::Update";
 
 OpenVRCameraObject::OpenVRCameraObject(OpenVRModule& module_instance) :
-	crsf::TPhysicalCamera(NodePath(module_instance.GetOpenVRPlugin()->get_tracked_camera()->create_camera_node(0))), module_(module_instance)
+	crsf::TPhysicalCamera(NodePath(module_instance.GetOpenVRPlugin()->get_tracked_camera()->create_camera_node())), module_(module_instance)
 {
 	SetName(module_.m_property.get("camera_name", std::string("openvr_camera")));
 	SetDeviceName(GetName());

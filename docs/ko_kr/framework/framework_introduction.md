@@ -1,7 +1,7 @@
 # CRSF 구조 소개
 
 ## CRSF 기본 구조
-![crsf-arch](https://user-images.githubusercontent.com/937305/57493543-4ec15c80-7300-11e9-9c4c-c4c1cc624194.jpg)
+![crsf-arch](https://user-images.githubusercontent.com/937305/57495177-e2e2f200-7307-11e9-8952-e23e6f2bca91.jpg)
 
 CRSF 는 미리 만들어진 런처(CRLauncher.exe)를 사용하여, CRSF 를 자동으로 셋업합니다.
 이 과정에서 모듈들이 제공되면, 모듈들을 실행하는 구조로 되어 있습니다.
